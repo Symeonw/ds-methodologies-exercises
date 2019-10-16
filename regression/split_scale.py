@@ -1,5 +1,4 @@
-import pandas as pd
-import warnings
+import stats
 warnings.filterwarnings("ignore")
 import numpy as numpy
 import wrangle
@@ -7,24 +6,55 @@ import env
 
 
 df = wrangle_telco()
-train, test = train_test_split(df, train_size = .7, random_state = 123)
-print(test)
+df
 
-def split_my_data(df,t_size,seed,split_on):
+df = df.drop(columns=["customer_id"])
+X = df[["total_charges"]]
+y = df.tenure
+def split_my_data(df, train_size):
     from sklearn.model_selection import train_test_split
-    x = df.drop([split_on], axis=1)
-    y = df[split_on]
-    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = t_size, random_state = seed)
-    return x_train, x_test, y_train, y_test
+    train, test = train_test_split(df, train_size = train_size, random_state = 123)
+    return train, test
+
+train, test = split_my_data(df, .70)
+
+def standard_scaler(train, test):
+    scaler=StandardScaler(copy=True,with_mean=True,with_std=True).fit(train)
+    train_scaled_data=scaler.transform(train)
+    test_scaled_data=scaler.transform(test)
+    train_scaled=pd.DataFrame(train_scaled_data,columns=train.columns).set_index([train.index])
+    test_scaled=pd.DataFrame(test_scaled_data,columns=test.columns).set_index([test.index])
+    return train_scaled, test_scaled
+
+train_scaled, test_scaled = standard_scaler(train, test)
+
+def scale_inverse(x):
+    scale_inverse = pd.DataFrame(scaler.inverse_transform(x), columns=x.columns.values).set_index([x.index.values])
+    return scaled_inverse
+scale_inverse(train_scaled)
 
 
-split_my_data(df,.7,123,"tenure")
+def uniform_scaler(train, test):
+    scaler = QuantileTransformer(n_quantiles=100, output_distribution='uniform', random_state=123, copy=True).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return train_scaled, test_scaled
+
+def gaussian_scaler(train, test):
+    scaler = PowerTransformer(method='yeo-johnson', standardize=False, copy=True).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return train_scaled, test_scaled
 
 
-def standard_scaler():
-    train = x_train,y_train
-    from sklearn.preprocessing import StandardScaler, QuantileTransformer, PowerTransformer, RobustScaler, MinMaxScaler
-    scaler = StandardScaler()
-    output = scaler.fit(train):scaler.transform(train),scaler.transform(test)
+def min_max_scaler(train, test):
+    scaler = MinMaxScaler(copy=True, feature_range=(0,1)).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return train_scaled, test_scaled
 
-standard_scaler()
+def iqr_robust_scaler(train, test):
+    scaler = RobustScaler(quantile_range=(25.0,75.0), copy=True, with_centering=True, with_scaling=True).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return train_scaled, test_scaled
