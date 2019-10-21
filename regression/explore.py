@@ -11,12 +11,6 @@ def plot_variable_pairs(df):
     x.map_offdiag(sns.regplot)
     plt.show()
     
-plot_variable_pairs(df)
-
-def months_to_years(tenure_months, df):
-    df = df["tenure_years"] = tenure_months % 12
-    return df
-
 def plot_categorical_and_continous_vars(cat_var, cont_var,df):
     barplot = sns.barplot( x = cat_var, y = cont_var, data=df)
     regplot = sns.regplot (x = cat_var, y = cont_var, data=df)
@@ -24,5 +18,6 @@ def plot_categorical_and_continous_vars(cat_var, cont_var,df):
     plt.show()
 
 
-def months_to_years(tenure_months, df):
-    return df.assign(tenure_years = lambda x: x[tenure_months] %12)
+def months_to_years(tenure_months, df):
+    df = df.assign(tenure_years = lambda x: x[tenure_months]%12)
+    return df

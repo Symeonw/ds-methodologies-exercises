@@ -1,22 +1,14 @@
 import stats
-warnings.filterwarnings("ignore")
 import numpy as numpy
 import wrangle
 import env
 
 
-df = wrangle_telco()
-df
-
-df = df.drop(columns=["customer_id"])
-X = df[["total_charges"]]
-y = df.tenure
 def split_my_data(df, train_size):
     from sklearn.model_selection import train_test_split
     train, test = train_test_split(df, train_size = train_size, random_state = 123)
     return train, test
 
-train, test = split_my_data(df, .70)
 
 def standard_scaler(train, test):
     scaler=StandardScaler(copy=True,with_mean=True,with_std=True).fit(train)
@@ -24,14 +16,12 @@ def standard_scaler(train, test):
     test_scaled_data=scaler.transform(test)
     train_scaled=pd.DataFrame(train_scaled_data,columns=train.columns).set_index([train.index])
     test_scaled=pd.DataFrame(test_scaled_data,columns=test.columns).set_index([test.index])
-    return train_scaled, test_scaled
-
-train_scaled, test_scaled = standard_scaler(train, test)
+    return scaler, train_scaled, test_scaled
 
 def scale_inverse(x):
     scale_inverse = pd.DataFrame(scaler.inverse_transform(x), columns=x.columns.values).set_index([x.index.values])
     return scaled_inverse
-scale_inverse(train_scaled)
+
 
 
 def uniform_scaler(train, test):

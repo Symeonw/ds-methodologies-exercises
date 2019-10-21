@@ -1,9 +1,4 @@
-import warnings
-warnings.filterwarnings("ignore")
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
+import stats
 from env import host, user, password
 url = f'mysql+pymysql://{user}:{password}@{host}/telco_churn'
 def clean_telco():
@@ -12,11 +7,9 @@ def clean_telco():
     group by customer_id;''' ,url)
     df = df[['customer_id', 'total_charges', "monthly_charges", "tenure"]]
     df.assign(total_charges = lambda x: x.total_charges.str.strip().replace('',np.nan).convert_objects(convert_numeric=True))
-    df["total_charges"] = pd.to_numeric(df["total_charges"], errors= "coerce").fillna(0)
+    df["total_charges"] = pd.to_numeric(df["total_charges"], errors= "coerce").dropna()
     return df
 def wrangle_telco():
     import pandas as pd
     df = clean_telco()
     return df
-wrangle_telco()
-
