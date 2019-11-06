@@ -14,5 +14,6 @@ def get_zillow():
     where (`latitude` is not null) and (`longitude` is not null);''',url)
 
 
-df.to_csv("zillow_data.csv")
+def zillow_to_csv():
+    return df.to_csv("zillow_data.csv")
 

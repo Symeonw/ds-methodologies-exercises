@@ -1,5 +1,5 @@
 import acquire
-import pandas
+import pandas as pd
 
 def nulls_by_col(df):
     num_missing = df.isnull().sum()
