@@ -2,6 +2,7 @@ import acquire
 import pandas as pd
 
 def nulls_by_col(df):
+    import pandas as pd
     num_missing = df.isnull().sum()
     rows = df.shape[0]
     pct_missing = num_missing/rows
