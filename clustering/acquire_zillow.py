@@ -6,7 +6,6 @@ def get_zillow():
     left join properties_2016 using(`parcelid`)
     left join airconditioningtype using (`airconditioningtypeid`)
     left join architecturalstyletype using (`architecturalstyletypeid`)
-    left join buildingclasstype using (`buildingclasstypeid`)
     left join heatingorsystemtype using (`heatingorsystemtypeid`)
     left join propertylandusetype using (`propertylandusetypeid`) 
     left join storytype using (`storytypeid`)

@@ -1,6 +1,7 @@
 import pandas as pd
 from pydataset import data
 import seaborn as sns
+from sklearn.metrics import r2_score
 df = data("faithful")
 
 df.corr()
@@ -27,7 +28,7 @@ r2 = r2_score(y_train, y_pred)
 sns.regplot(X_train, y_train, fit_reg=True)
 
 import matplotlib.pyplot as plt
-from sklearn.metrics import r2_score
+
 _, ax = plt.subplots()
 
 ax.scatter(x = range(0, y_train.size), y=y_train, c = 'blue', label = 'Actual', alpha = .7)
